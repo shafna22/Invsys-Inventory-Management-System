@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Supplies</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #6C63FF;
+            color: white;
+        }
+        .status-select {
+            padding: 5px;
+            font-size: 14px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            padding: 10px 15px;
+            background:  #6C63FF;
+            color: white;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .back-btn:hover {
+            background:  #6C63FF;
+        }
+        .no-supplies {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Manage Supplies</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Supply ID</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for supply in supplies %}
+                <tr>
+                    <td>{{ supply.id }}</td>
+                    <td>{{ supply.product.name | e }}</td> <!-- Escaped for security -->
+                    <td>{{ supply.quantity }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin.update_status', supply_id=supply.id) }}">
+                            <select name="status" class="status-select" aria-label="Update supply status">
+                                <option value="Pending" {% if supply.status == "Pending" %}selected{% endif %}>Pending</option>
+                                <option value="Approved" {% if supply.status == "Approved" %}selected{% endif %}>Approved</option>
+                                <option value="Rejected" {% if supply.status == "Rejected" %}selected{% endif %}>Rejected</option>
+                               
+                            </select>
+                            <button type="submit" class="update-btn">Update</button>
+                        </form>
+                        
+                        {% if supply.status == "Approved" %}
+                            <form method="POST" action="{{ url_for('admin.complete_order', supply_id=supply.id) }}">
+                                <button type="submit" class="complete-btn">Complete Order</button>
+                            </form>
+                        {% endif %}
+                        
+                        
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="no-supplies">No supplies found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('main.supplier_dashboard') }}" class="back-btn">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

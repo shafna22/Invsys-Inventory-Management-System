@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - Inventory Management System</title>
+    <style>
+        /* Reset and base styles */
+        body, h1, h2, p {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        header {
+            background-color: #6C63FF; /* Lavender Color */
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        /* Navigation links styles */
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .nav-links li {
+            display: inline;
+        }
+
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links li a:hover {
+            color: #FFD700; /* Gold color on hover */
+        }
+
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .feature {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 48%;
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .feature:hover {
+            transform: scale(1.05);
+        }
+
+        .feature img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .feature-content {
+            padding: 20px;
+        }
+
+        .feature-content h2 {
+            font-size: 28px;
+            color: #6C63FF;
+            margin-bottom: 10px;
+        }
+
+        .feature-content p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .btn-common {
+            background-color: #6C63FF;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .btn-common:hover {
+            background-color: #5c4295;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Features</h1>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('main.index') }}">Home</a></li>
+            <li><a href="{{ url_for('main.login') }}">Login</a></li>
+        </ul>
+    </header>
+
+    <div class="container">
+        <!-- Report & Analytics Feature -->
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/report.jpg') }}" alt="Report & Analytics">
+            <div class="feature-content">
+                <h2>Report & Analytics</h2>
+                <p>Track and analyze the performance of your inventory in real-time with detailed reports and dashboards. Gain insights into sales trends, stock levels, and supply chain performance. Make data-driven decisions with ease.</p>
+            </div>
+        </div>
+
+        <!-- Order Management Feature -->
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/order.jpg') }}" alt="Order Management">
+            <div class="feature-content">
+                <h2>Order Management</h2>
+                <p>Efficiently manage your orders from start to finish. Track the status of each order, streamline communication between departments, and ensure on-time deliveries with minimal effort. Stay organized and in control of your sales process.</p>
+            </div>
+        </div>
+
+        <!-- Inventory Management Feature -->
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/inventory.jpg') }}" alt="Inventory Management">
+            <div class="feature-content">
+                <h2>Inventory Management</h2>
+                <p>Keep track of your inventory in real-time with advanced management features. Automate stock updates, set reorder points, and avoid stockouts. Ensure your stock levels are optimized for maximum efficiency and cost savings.</p>
+            </div>
+        </div>
+
+        <!-- Supply Management Feature -->
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/supply.jpg') }}" alt="Supply Management">
+            <div class="feature-content">
+                <h2>Supply Management</h2>
+                <p>Manage your suppliers, purchase orders, and deliveries in one place. Track supply chain performance, manage vendor relations, and ensure timely replenishment of stock. Simplify your procurement process and reduce lead times.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

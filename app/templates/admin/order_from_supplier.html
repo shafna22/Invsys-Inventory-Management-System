@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order from {{ supplier.username | e }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+        }
+        input, select, button {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            width: 100%;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .back-link {
+            margin-top: 10px;
+            display: inline-block;
+            text-decoration: none;
+            color: #6C63FF;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Order from {{ supplier.username | e }}</h2>
+
+        <form method="POST" action="{{ url_for('admin.order_from_supplier', supplier_id=supplier.id) }}">
+            {% if csrf_token %}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% endif %}
+
+            <label for="product_id">Product:</label>
+            <select name="product_id" required>
+                <option value="" disabled selected>Select a product</option>
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" name="quantity" min="1" required>
+
+           
+
+            <button type="submit">Place Order</button>
+        </form>
+
+        <p><a href="{{ url_for('admin.manage_suppliers') }}" class="back-link">&larr; Back to Suppliers</a></p>
+    </div>
+</body>
+</html>

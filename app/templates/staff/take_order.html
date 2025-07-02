@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Order</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script>
+        // Store product stock data in JavaScript
+        var productStock = {
+            {% for product in products %}
+                "{{ product.id }}": {{ product.quantity }},
+            {% endfor %}
+        };
+
+        function updateStockInfo() {
+            var productId = document.getElementById("product-select").value;
+            var stockDisplay = document.getElementById("stock-info");
+            if (productId && productStock[productId] !== undefined) {
+                stockDisplay.innerHTML = "Available Stock: " + productStock[productId];
+            } else {
+                stockDisplay.innerHTML = "";
+            }
+        }
+
+        function validateQuantity() {
+            var productId = document.getElementById("product-select").value;
+            var quantityInput = document.getElementById("quantity-input");
+            var stock = productStock[productId];
+
+            if (quantityInput.value > stock) {
+                alert("Only " + stock + " units available in stock!");
+                quantityInput.value = stock; // Set quantity to max available
+            }
+        }
+    </script>
+</head>
+<body class="bg-light">
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card shadow-lg p-4" style="width: 400px; background-color: #6a0dad; color: white; border-radius: 10px;">
+            <h3 class="text-center mb-3">Take Order</h3>
+
+            <form method="POST" action="{{ url_for('staff.take_order') }}">
+                <div class="mb-3">
+                    <label class="form-label">Select Product</label>
+                    <select class="form-select" name="product" id="product-select" required onchange="updateStockInfo()">
+                        <option value="" selected disabled>Select a product</option>
+                        {% for product in products %}
+                        <option value="{{ product.id }}">{{ product.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <small id="stock-info" class="d-block mt-1"></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Quantity</label>
+                    <input type="number" class="form-control" name="quantity" id="quantity-input" min="1" required oninput="validateQuantity()">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Payment Method</label>
+                    <select class="form-select" name="payment_method" required>
+                        <option value="Cash">Cash</option>
+                        <option value="Card">Card</option>
+                        <option value="UPI">UPI</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-light w-100">Submit Order</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

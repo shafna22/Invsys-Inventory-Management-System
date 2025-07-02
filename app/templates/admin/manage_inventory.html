@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #ffffff;
+        }
+        .search-filter {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-box {
+            padding: 8px;
+            width: 250px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background: #333;
+            color: white;
+        }
+        .search-button {
+            padding: 8px 12px;
+            background: #5548d9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        select, .apply-button {
+            padding: 8px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #222;
+            color: white;
+        }
+        .apply-button {
+            background: #5548d9;
+            color: white;
+            cursor: pointer;
+        }
+        .table-container {
+            margin-top: 50px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #222;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #444;
+            text-align: center;
+        }
+        th {
+            background: #333;
+            color: #ffffff;
+        }
+        tr:nth-child(even) {
+            background: #2a2a2a;
+        }
+        .low-stock {
+            background-color: #ffebee;
+            color: #000;
+        }
+        .btn-edit {
+            padding: 5px 10px;
+            background: #ffc107;
+            color: black;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn-delete {
+            padding: 5px 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .button-container {
+            margin-top: 50px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn-add {
+            background-color: #5548d9;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .btn-add:hover {
+            background-color: #4337b1;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .bg-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .bg-warning {
+            background-color: #ffc107;
+            color: black;
+        }
+        .bg-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        /* Notification and User Icon */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 10px;
+        }
+        .icon {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        /* Notification Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+            width: 400px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .modal-content {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .close-btn {
+            cursor: pointer;
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+
+
+    <h2>Inventory Management</h2>
+    
+    <!-- 🔗 Link to Sales Prediction -->
+    <div>
+        <a href="{{ url_for('admin.sales_prediction') }}" 
+           class="btn" 
+           style="background-color: #5548d9; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+            📈 View Sales Prediction Report
+        </a>
+    </div><br>
+    <div>    
+    
+        <a href="{{ url_for('admin.low_stock_forecast') }}" 
+        class="btn" 
+        style="background-color: #5548d9; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+        🔔 View Low Stock Forecast
+        </a>
+    </div>
+
+    <div class="search-filter">
+        <form method="GET" action="{{ url_for('admin.manage_inventory') }}">
+            <input type="text" class="search-box" name="search" placeholder="Search by name or category" value="{{ search_query }}">
+            <button type="submit" class="search-button">🔍</button>
+        </form>
+    </div>
+
+    <div class="filter-container">
+        <form method="GET" action="{{ url_for('admin.manage_inventory') }}">
+            <select name="category">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category == request.args.get('category') %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+            <select name="supplier">
+                <option value="">All Suppliers</option>
+                {% for supplier in suppliers %}
+                    <option value="{{ supplier }}" {% if supplier == request.args.get('supplier') %}selected{% endif %}>{{ supplier }}</option>
+                {% endfor %}
+            </select>
+            <select name="availability">
+                <option value="">All Availability</option>
+                {% for availability in availabilities %}
+                    <option value="{{ availability }}" {% if availability == request.args.get('availability') %}selected{% endif %}>{{ availability }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="apply-button">Apply</button>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Supplier</th>
+                    <th>Availability</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory_items %}
+                <tr {% if item.quantity <= 10 %} class="low-stock" {% endif %}>
+                    <td>{{ item.product_id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.supplier }}</td>
+                    <td>
+                        {% if item.quantity > 10 %}
+                            <span class="badge bg-success">Available</span>
+                        {% elif item.quantity > 5 %}
+                            <span class="badge bg-warning">Low Stock</span>
+                        {% else %}
+                            <span class="badge bg-danger">Critical Stock</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if current_user.role in ["Admin", "Manager"] %}
+                            <a href="{{ url_for('admin.edit_inventory', product_id=item.product_id) }}" class="btn-edit">Edit</a>
+                        {% endif %}
+                        {% if current_user.role == "Admin" %}
+                            <form action="{{ url_for('admin.delete_inventory', product_id=item.product_id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="button-container">
+        {% if current_user.role == "Admin" %}
+            <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-add">Back to Dashboard</a>
+            <a href="{{ url_for('admin.inventory_form', _external=True) }}" class="btn btn-add">Add Item</a>
+        {% elif current_user.role == "Manager" %}
+            <a href="{{ url_for('main.manager_dashboard') }}" class="btn btn-add">Back to Dashboard</a>
+        {% else %}  
+            <a href="{{ url_for('main.staff_dashboard') }}" class="btn btn-add">Back to Dashboard</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Notification Modal -->
+<div id="notificationModal" class="modal">
+    <div class="modal-header">
+        <h3>Notifications</h3>
+        <span class="close-btn" onclick="closeNotification()">✖</span>
+    </div>
+    <div class="modal-content">
+        <p>No new notifications.</p>
+    </div>
+</div>
+
+<script>
+    function showNotification() {
+        document.getElementById('notificationModal').style.display = 'block';
+    }
+    
+    function closeNotification() {
+        document.getElementById('notificationModal').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

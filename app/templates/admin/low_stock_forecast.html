@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Low Stock Forecast</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    >
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px 40px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #5548d9;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        #stockChart {
+            max-height: 400px;
+        }
+
+        .table thead th {
+            background-color: #5548d9;
+            color: white;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .table td {
+            text-align: center;
+            font-size: 1rem;
+            vertical-align: middle;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .table-danger {
+            background-color: #ffe6e6 !important;
+        }
+
+        .btn-back {
+            background-color: #5548d9;
+            color: white;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 40px;
+            display: inline-block;
+        }
+
+        .btn-back:hover {
+            background-color: #4138b6;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .table thead th,
+            .table td {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📉 Low Stock Forecast</h2>
+
+    <!-- Chart -->
+    <div>
+        <canvas id="stockChart"></canvas>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive mt-5">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Current Stock</th>
+                    <th>Avg Daily Sales</th>
+                    <th>Estimated Days Left</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in forecast %}
+                <tr {% if row.days_remaining != "N/A" and row.days_remaining <= 3 %} class="table-danger" {% endif %}>
+                    <td>{{ row.product_name }}</td>
+                    <td>{{ row.stock }}</td>
+                    <td>{{ row.avg_daily_sales }}</td>
+                    <td>{{ row.days_remaining }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center">
+        <a href="{{ url_for('admin.manage_inventory') }}" class="btn-back">🔙 Back to Inventory</a>
+    </div>
+
+    <!-- Chart Script -->
+    <script>
+        const ctx = document.getElementById('stockChart').getContext('2d');
+        const stockChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [{% for row in forecast %}'{{ row.product_name }}',{% endfor %}],
+                datasets: [{
+                    label: 'Estimated Days Left',
+                    data: [{% for row in forecast %}{{ row.days_remaining if row.days_remaining != "N/A" else 'null' }},{% endfor %}],
+                    backgroundColor: 'rgba(85, 72, 217, 0.2)',
+                    borderColor: '#5548d9',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Days Remaining' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Products' }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

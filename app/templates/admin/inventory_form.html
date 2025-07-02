@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if item %}Edit Inventory Item{% else %}Add Inventory Item{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        h2 {
+            background-color: #6f42c1;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .card {
+            background-color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+            transition: background-color 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #5a32a3;
+            border-color: #5a32a3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+        label {
+            font-weight: 500;
+            color: #343a40;
+        }
+        input, select {
+            border-radius: 6px;
+            padding: 8px;
+            border: 1px solid #ced4da;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>{% if item %}Edit Inventory Item{% else %}Add Inventory Item{% endif %}</h2>
+    
+    <div class="card">
+        <form action="{% if item %}{{ url_for('admin.edit_inventory', product_id=item.product_id) }}{% else %}{{ url_for('admin.add_inventory') }}{% endif %}" method="POST">
+            
+            <div class="mb-3">
+                <label class="form-label">Product ID:</label>
+                <input type="text" name="product_id" class="form-control" value="{{ item.product_id if item else '' }}" {% if item %}readonly{% endif %} required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Name:</label>
+                <input type="text" name="name" class="form-control" value="{{ item.name if item else '' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Category:</label>
+                <input type="text" name="category" class="form-control" value="{{ item.category if item else '' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Quantity:</label>
+                <input type="number" name="quantity" class="form-control" value="{{ item.quantity if item else '' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Price:</label>
+                <input type="number" step="0.01" name="price" class="form-control" value="{{ item.price if item else '' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Supplier:</label>
+                <input type="text" name="supplier" class="form-control" value="{{ item.supplier if item else '' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Availability:</label>
+                <select name="availability" class="form-select" required>
+                    <option value="Available" {% if item and item.availability == 'Available' %}selected{% endif %}>Available</option>
+                    <option value="Not Available" {% if item and item.availability == 'Not Available' %}selected{% endif %}>Not Available</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('admin.manage_inventory') }}" class="btn btn-secondary">Back</a>
+                <button type="submit" class="btn btn-primary">{% if item %}Update{% else %}Save{% endif %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

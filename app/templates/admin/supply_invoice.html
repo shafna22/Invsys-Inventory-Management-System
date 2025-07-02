@@ -1,0 +1,119 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #6C63FF;
+            color: white;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        .print-btn {
+            background: #17a2b8;
+        }
+        .print-btn:hover {
+            background: #138496;
+        }
+        .complete-btn {
+            background: #28a745;
+        }
+        .complete-btn:hover {
+            background: #218838;
+        }
+        .back-btn {
+            background: #ff6347;
+        }
+        .back-btn:hover {
+            background: #d9534f;
+        }
+        @media print {
+            .btn {
+                display: none;
+            }
+        }
+    </style>
+    <script>
+        function printInvoice() {
+            window.print();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Invoice</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Supplier ID</th>
+                    <th>Supplier Name</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price (₹)</th>
+                    <th>Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ supply.supplier.id }}</td>
+                    <td>{{ supply.supplier.username | e }}</td>
+                    <td>{{ supply.product.name | e }}</td>
+                    <td>{{ supply.quantity }}</td>
+                    <td>₹{{ supply.product.price }}</td>
+                    <td><strong>₹{{ supply.quantity * supply.product.price }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Buttons for actions -->
+        <button class="btn print-btn" onclick="printInvoice()">Print / Download</button>
+        
+        <!-- Complete Order Button -->
+        <form action="{{ url_for('admin.complete_order', supply_id=supply.id) }}" method="post">
+            <button type="submit" class="btn complete-btn">Complete Order</button>
+        </form>
+        
+        <!-- Back to Orders Button -->
+        <a href="{{ url_for('admin.supplier_status') }}">
+            <button class="btn back-btn">Back to Orders</button>
+        </a>
+    </div>
+</body>
+</html>

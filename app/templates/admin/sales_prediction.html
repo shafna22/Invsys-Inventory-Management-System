@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales Predictions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #5548d9;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .report-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .report-table {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .summary-box {
+            background-color: #e9ecef;
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background-color: #4438b8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="report-header text-center mb-4">
+            <h2>📈 Sales Predictions Report</h2>
+            <p class="mb-0">Predicted quantities for products - based on recent trends</p>
+        </div>
+        
+        {% if predictions %}
+        <div class="summary-box">
+            <h5>🔢 Total Predictions: {{ predictions|length }}</h5>
+        </div>
+
+        <div class="table-responsive report-table">
+            <table class="table table-hover table-bordered mb-0">
+                <thead>
+                    <tr>
+                        <th>🛍️ Product Name</th>
+                        <th>📊 Predicted Quantity for Next Day</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product_name, predicted_quantity in predictions.items() %}
+                    <tr>
+                        <td>{{ product_name }}</td>
+                        <td>{{ predicted_quantity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center mt-4">No prediction data available.</div>
+        {% endif %}
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('admin.manage_inventory') }}" class="btn btn-custom">
+                🔙 Back to Inventory
+            </a>
+        </div>
+    </div>
+</body>
+</html>

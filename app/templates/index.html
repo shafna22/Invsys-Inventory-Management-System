@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo"><h1>InvSys</h1></div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('main.features') }}">Features</a></li>
+
+            
+            <li><a href="{{ url_for('main.login') }}">Login</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>Effortless Inventory Management</h1>
+        <p>Track, manage, and optimize your inventory with ease.</p>
+        <a href="{{ url_for('main.features') }}" class="btn">Explore Features</a>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/inventory_tracking.png') }}" alt="Inventory Tracking">
+            <h3>Inventory Tracking</h3>
+            <p>Keep real-time track of your stock and avoid shortages.</p>
+        </div>
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/report_analytics.jpg') }}" alt="Reports & Analytics">
+            <h3>Reports & Analytics</h3>
+            <p>Generate insights to make data-driven business decisions.</p>
+        </div>
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/order_management.jpg') }}" alt="Order Management">
+            <h3>Order Management</h3>
+            <p>Manage incoming and outgoing orders seamlessly.</p>
+        </div>
+        <div class="feature">
+            <img src="{{ url_for('static', filename='images/supply_management.jpg') }}" alt="Supply Management">
+            <h3>Supply Management</h3>
+            <p>Ensure a smooth supply chain by managing vendors, purchases, and deliveries efficiently.</p>
+        </div>
+    </section>
+       <!-- Image and Text Section -->
+       <section class="image-text-section">
+        <div class="image-container">
+            <img src="{{ url_for('static', filename='images/ims.jpg') }}" alt="Image">
+        </div>
+        <div class="text-container">
+            <h2>Elegant Inventory Oversight</h2>
+<p>Master your inventory with precision and grace. Our cutting-edge management system delivers real-time insights, seamless automation, and flawless order processing, offering you unmatched control and efficiency in inventory management.</p>
+
+
+            
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 InvSys. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

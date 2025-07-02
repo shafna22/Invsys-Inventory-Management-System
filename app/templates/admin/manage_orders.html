@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #5548d9;
+            color: white;
+            padding: 10px;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-view-orders {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-view-orders:hover {
+            background-color: #ff1a1a;
+            color: white;
+        }
+
+        .table {
+            margin-top: 20px;
+        }
+
+        .table th {
+            background-color: #5548d9;
+            color: white;
+            text-align: center;
+        }
+
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .badge {
+            font-size: 14px;
+            padding: 6px;
+            border-radius: 12px;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-success:hover, .btn-danger:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px; /* Adjust space between the buttons */
+        }
+        
+        .btn-common {
+            background-color: #5a3796;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: 48%; /* Adjust width to make both buttons fit in one line */
+        }
+    </style>
+</head>
+<body>
+
+<!-- ✅ Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('admin.admin_dashboard') }}">
+            Admin Dashboard
+        </a>
+        <div class="ms-auto">
+            <a href="{{ url_for('admin.all_orders') }}" class="btn btn-view-orders">
+                <i class="fas fa-list"></i> View Orders
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ✅ Main Content -->
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Manage Orders</h2>
+    
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Payment Method</th>
+                <th>Staff</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.product.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.payment_method }}</td>
+                <td>{{ order.staff.username }}</td>
+                <td>
+                    {% if order.status == "Pending" %}
+                        <span class="badge bg-warning">{{ order.status }}</span>
+                    {% elif order.status == "Completed" %}
+                        <span class="badge bg-success">{{ order.status }}</span>
+                    {% elif order.status == "Rejected" %}
+                        <span class="badge bg-danger">{{ order.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if order.status == "Pending" %}
+                    <form method="POST" action="{{ url_for('admin.update_order_status', order_id=order.id) }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-success btn-sm me-2">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                    </form>
+                    {% else %}
+                        <span class="text-secondary">No Action</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="button-container">
+        <button onclick="window.location.href='{{ url_for('admin.admin_dashboard') if current_user.role == 'Admin' else url_for('main.manager_dashboard') }}'" class="btn-common">Back to Dashboard</button>
+    </div>
+</div>
+
+<!-- ✅ Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

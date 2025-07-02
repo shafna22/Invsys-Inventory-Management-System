@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | InvSys</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #6C63FF;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            width: 60%;
+            max-width: 900px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .register-box {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .flash-messages {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .flash-messages .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .flash-messages .danger {
+            background-color: #ffcccc;
+            color: #d63031;
+        }
+
+        .flash-messages .success {
+            background-color: #ccffcc;
+            color: #27ae60;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input, 
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            padding-left: 40px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6C63FF;
+        }
+
+        button {
+            padding: 12px;
+            background: #6C63FF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: 0.3s ease-in-out;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #5548d9;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .image-box {
+            flex: 1;
+            background: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .image-box img {
+            width: 80%;
+            height: auto;
+        }
+
+        .category-container {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 90%;
+            }
+
+            .image-box {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        function toggleCategoryField() {
+            var roleSelect = document.getElementById("role");
+            var categoryField = document.getElementById("category-container");
+
+            if (roleSelect.value === "Supplier") {
+                categoryField.style.display = "block";
+            } else {
+                categoryField.style.display = "none";
+            }
+        }
+
+        // Maintain category field visibility after form submission
+        window.onload = function() {
+            toggleCategoryField();
+        };
+    </script>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="register-box">
+            <h2>Register</h2>
+
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <p class="message {{ category }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" placeholder="Username" value="{{ request.form.get('username', '') }}" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" placeholder="Email" value="{{ request.form.get('email', '') }}" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" name="contact_number" placeholder="Contact Number" value="{{ request.form.get('contact_number', '') }}" required>
+                </div>
+
+                <label for="role">Role:</label>
+                <div class="input-group">
+                    <i class="fas fa-user-tag"></i>
+                    <select name="role" id="role" required onchange="toggleCategoryField()">
+                        <option value="Staff" {% if request.form.get('role') == 'Staff' %}selected{% endif %}>Staff</option>
+                        <option value="Manager" {% if request.form.get('role') == 'Manager' %}selected{% endif %}>Manager</option>
+                        <option value="Supplier" {% if request.form.get('role') == 'Supplier' %}selected{% endif %}>Supplier</option>
+                    </select>
+                </div>
+
+                <!-- Category field for suppliers -->
+                <div id="category-container" class="category-container">
+                    <div class="input-group">
+                        <i class="fas fa-list"></i>
+                        <input type="text" name="category" id="category" placeholder="Supplier Category" value="{{ request.form.get('category', '') }}">
+                    </div>
+                </div>
+
+                <button type="submit">Register</button>
+            </form>
+
+            <p>Already have an account? <a href="{{ url_for('main.login') }}">Login here</a></p>
+        </div>
+        <div class="image-box">
+            <img src="{{ url_for('static', filename='images/workers.png') }}" alt="Workers">
+        </div>
+    </div>
+</body>
+</html>
